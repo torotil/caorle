@@ -1,0 +1,42 @@
+g21
+g64
+m8
+
+s26 m3
+g4p2
+(g0x.5)
+(z.7)
+f75
+
+#<z_length>=100 (length)
+#<max_depth>=20 (maximum depth)
+#<x_layer>=2    (x-layer thickness)
+#<z_layer>=4    (z-slice thickness)
+#<raster>=60    (steps / commands per turn)
+
+#<min_x>=0
+#<lstep>=0
+o102 while [#<lstep> LE #<max_depth>/#<x_layer>]
+  g0 x10 z0
+  #<x> = 0
+  #<z> = 0
+  #<min_x> = [-#<x_layer> * #<lstep>]
+  #<zstep> = 0
+  o100 while [#<zstep> LT #<z_length>/#<z_layer>]
+    #<xstep> = 0
+    o101 while [#<xstep> LT #<raster>]
+      #<nx> = [#<min_x>*[1+SIN[#<xstep> / #<raster> * 360 * 2 - 90]]/2]
+      #<nz> = [[#<zstep> + #<xstep> / #<raster>] * #<z_layer>]
+      #<k> = sqrt[[#<nx> - #<x>]**2 + [#<nz> - #<z>]**2]
+      g33 x[#<nx>] z[#<nz>] k[#<k>*#<raster>]
+      #<x> = #<nx>
+      #<z> = #<nz>
+      #<xstep> = [#<xstep> + 1]
+    o101 endwhile
+    #<zstep> = [#<zstep> + 1]
+  o100 endwhile
+  g0 x10 z[#<z_length>]
+  #<lstep> = [#<lstep> + 1]
+o102 endwhile
+
+m2
