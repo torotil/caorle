@@ -1,0 +1,27 @@
+g21
+g64
+m8
+
+s26 m3
+g4p2
+f75
+
+#<amplitude>=20 (maximum depth)
+#<raster>=60    (steps / commands per turn)
+#<repeat>=50
+
+g0 x0 z0
+
+#<xstep> = 0
+#<x> = 0
+o101 while [#<xstep> LT #<raster>*#<repeat>]
+  #<nx> = [#<amplitude>*SIN[#<xstep> / #<raster> * 360]]
+  #<k> = [ABS[#<nx> - #<x>]]
+  g33 x[#<nx>] k[#<raster>]
+  #<x> = #<nx>
+  #<xstep> = [#<xstep> + 1]
+o101 endwhile
+
+g0 x0 z0
+
+m2
