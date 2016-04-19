@@ -1,0 +1,26 @@
+g21
+g64
+m8
+
+s26 m3
+g4p2
+(g0x.5)
+(z.7)
+f75
+
+#<z_length>=100 (length)
+#<max_depth>=20 (maximum depth)
+#<x_layer>=3    (x-layer thickness)
+
+#<min_x>=0
+#<lstep>=0
+o102 while [#<lstep> LE #<max_depth>/#<x_layer>]
+  #<min_x> = [-#<x_layer> * #<lstep>]
+  g0 x10 z0
+  g1 x[#<min_x>]
+  g1 z[#<z_length>]
+  g0 x10 z[#<z_length>]
+  #<lstep> = [#<lstep> + 1]
+o102 endwhile
+
+m2
