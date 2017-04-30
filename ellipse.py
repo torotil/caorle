@@ -24,6 +24,10 @@ def ellipse(z, phi, min_x):
     """ Generate the x-values """
     return min_x * (1+sin(phi * 2 - pi / 2)) / 2
 
+def cylinder(z, phi, min_x):
+    return min_x
+
+form = cylinder
 
 def find_max_x(z, min_x, form, raster):
     mi, mx = -1, None
@@ -72,7 +76,7 @@ for lstep in [int(max_depth/x_layer)]: #range(int(max_depth/x_layer) + 1):
     min_x = -x_layer * lstep
 
     # Do the entry-move.
-    mi, mx = find_max_x(z, min_x, ellipse, raster)
+    mi, mx = find_max_x(z, min_x, form, raster)
     # Be at max x one raster step befor the actual max x.
     m.g0(e_distance, z, mi-1)
     #print("Entry move in {} turns land at step {}".format(round(t, 2), mi))
@@ -82,7 +86,7 @@ for lstep in [int(max_depth/x_layer)]: #range(int(max_depth/x_layer) + 1):
     # Complete the current turn.
     for phi_step in range(mi + 1, raster):
         phi = float(phi_step) / raster * 2 * pi
-        nx = ellipse(z, phi, min_x)
+        nx = form(z, phi, min_x)
         #print(phi_step, ':', end='')
         m.g1(nx, z, phi_step)
         x = nx
@@ -90,7 +94,7 @@ for lstep in [int(max_depth/x_layer)]: #range(int(max_depth/x_layer) + 1):
     # Do another full turn.
     for phi_step in range(0, raster):
         phi = float(phi_step) / raster * 2 * pi
-        nx = ellipse(z, phi, min_x)
+        nx = form(z, phi, min_x)
         #print(phi_step, ':', end='')
         m.g1(nx, z, phi_step)
         x = nx
@@ -100,7 +104,7 @@ for lstep in [int(max_depth/x_layer)]: #range(int(max_depth/x_layer) + 1):
         for phi_step in range(raster):
             phi = float(phi_step) / raster * 2 * pi
             nz = (zstep + float(phi_step) / raster) * z_layer
-            nx = ellipse(nz, phi, min_x)
+            nx = form(nz, phi, min_x)
             #print(phi_step, ':', end='')
             m.g1(nx, nz, phi_step)
             x = nx
@@ -109,16 +113,16 @@ for lstep in [int(max_depth/x_layer)]: #range(int(max_depth/x_layer) + 1):
     # Do another full turn.
     for phi_step in range(0, raster):
         phi = float(phi_step) / raster * 2 * pi
-        nx = ellipse(z, phi, min_x)
+        nx = form(z, phi, min_x)
         #print(phi_step, ':', end='')
         m.g1(nx, z, phi_step)
         x = nx
 
     # Move to the maximum x for this z.
-    mi, _ = find_max_x(z, min_x, ellipse, raster)
+    mi, _ = find_max_x(z, min_x, form, raster)
     for phi_step in range(0, mi+1):
         phi = float(phi_step) / raster * 2 * pi
-        nx = ellipse(z, phi, min_x)
+        nx = form(z, phi, min_x)
         #print(phi_step, ':', end='')
         m.g1(nx, z, phi_step)
         x = nx
